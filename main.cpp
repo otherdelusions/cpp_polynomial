@@ -177,11 +177,11 @@ int main() {
     Polynomial sum = p1 + p2;
     Polynomial diff = p1 - p2;
     Polynomial mult = p1 * p2;
-    Polynomial div = p1 / p2;
+    //Polynomial div = p1 / p2;
     std::cout << "p1 + p2: " << sum << std::endl;
     std::cout << "p1 - p2: " << diff << std::endl;
     std::cout << "p1 * p2: " << mult << std::endl;
-    std::cout << "p1 / p2: " << div << std::endl;
+    //std::cout << "p1 / p2: " << div << std::endl;
 
     std::cout << std::endl;
     Monom m(2, 6);
