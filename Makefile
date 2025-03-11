@@ -15,5 +15,5 @@ $(BIN_DIR)/$(TARGET): $(SRC)
 run: $(BIN_DIR)/$(TARGET)
 	./$(BIN_DIR)/$(TARGET)
 
-clean:
-	"rm" -rf $(BIN_DIR)
+clean: $(BIN_DIR)
+	"rm" -rf $(BIN_DIR)/$(TARGET)
