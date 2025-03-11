@@ -87,7 +87,7 @@ public:
         return result;
     }
 
-    Polynomial operator/(const Polynomial& other) const {
+    Polynomial operator/(const Polynomial &other) const {
         // TODO: Сделать деление
     }
 
@@ -108,14 +108,19 @@ public:
     }
 
     friend std::ostream &operator<<(std::ostream &os, Polynomial &p) {
+        bool zero_printed = false;
+
         std::sort(p.monoms.begin(), p.monoms.end(),
                   [](const Monom &a, const Monom &b) { return a.q < b.q; });
         for (int i = 0; i < p.monoms.size(); i++) {  // TODO: Переделать этот стыд
             if (p.monoms[i].c == 0) {
-                os << "0";
+                if (zero_printed == false) {
+                    zero_printed = true;
+                    os << "0";
 
-                if (i < p.monoms.size() - 1) {
-                    os << " + ";
+                    if (i < p.monoms.size() - 1 && p.monoms[i + 1].c != 0) {
+                        os << " + ";
+                    }
                 }
                 continue;
             }
@@ -177,11 +182,11 @@ int main() {
     Polynomial sum = p1 + p2;
     Polynomial diff = p1 - p2;
     Polynomial mult = p1 * p2;
-    //Polynomial div = p1 / p2;
+    // Polynomial div = p1 / p2;
     std::cout << "p1 + p2: " << sum << std::endl;
     std::cout << "p1 - p2: " << diff << std::endl;
     std::cout << "p1 * p2: " << mult << std::endl;
-    //std::cout << "p1 / p2: " << div << std::endl;
+    // std::cout << "p1 / p2: " << div << std::endl;
 
     std::cout << std::endl;
     Monom m(2, 6);
