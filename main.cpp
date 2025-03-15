@@ -61,6 +61,16 @@ public:
         monoms.push_back(newm);
     }
 
+    Polynomial& operator=(const Polynomial& other) {
+        if (this != &other) {
+            monoms.clear();
+            for (const Monom& m : other.monoms) {
+                addMonom(m);
+            }
+        }
+        return *this;
+    }
+
     Polynomial operator+(const Polynomial &other) {
         Polynomial result = *this;
         for (const Monom &m : other.monoms) {
@@ -91,10 +101,27 @@ public:
     }
 
     Polynomial operator/(const Polynomial &other) const {
-        // TODO: Сделать деление
+        Polynomial result;
+
+        Polynomial divisible = *this;
+        Polynomial divider = other;
+
+        Monom qmonom;
+
+        while (divisible.monoms[0].q >= other.monoms[0].q) {
+            qmonom = divisible.monoms[0] / other.monoms[0];
+            result.addMonom(qmonom);
+            divider = other * qmonom;
+            divisible = divisible - divider;
+
+            divisible.sort();
+        }
+
+        result.sort();
+        return result;
     }
 
-    Polynomial operator/(const Monom &divm) {
+    Polynomial operator/(const Monom &divm) const {
         Polynomial result;
         for (const Monom &m : monoms) {
             result.addMonom(m / divm);
@@ -103,10 +130,19 @@ public:
         return result;
     }
 
-    Polynomial operator*(const Monom &mulm) {
+    Polynomial operator*(const Monom &mulm) const {
         Polynomial result;
         for (const Monom &m : monoms) {
             result.addMonom(m * mulm);
+        }
+        result.sort();
+        return result;
+    }
+
+    Polynomial operator*(const int muli) const {
+        Polynomial result;
+        for (const Monom &m : monoms) {
+            result.addMonom(m * muli);
         }
         result.sort();
         return result;
@@ -118,7 +154,7 @@ public:
             os << "0";
             return os;
         }
-        
+
         for (int i = 0; i < p.monoms.size(); i++) {
             if (p.monoms[i].c < 0) {
                 os << "-";
@@ -130,12 +166,10 @@ public:
                 os << " ";
             }
 
-            if (p.monoms[i].c == -1) {
-                os << abs(p.monoms[i].c);
-            } else if (p.monoms[i].c == 1 && p.monoms[i].q == 0) {
+            if (p.monoms[i].c == 1 && p.monoms[i].q == 0) {
                 os << p.monoms[i].c;
             } else if (p.monoms[i].c != 1) {
-                os << p.monoms[i].c;
+                os << abs(p.monoms[i].c);
             }
 
             if (p.monoms[i].q == 1) {
@@ -194,11 +228,11 @@ int main() {
     Polynomial sum = p1 + p2;
     Polynomial diff = p1 - p2;
     Polynomial mult = p1 * p2;
-    // Polynomial div = p1 / p2;
+    Polynomial div = p1 / p2;
     std::cout << "p1 + p2: " << sum << std::endl;
     std::cout << "p1 - p2: " << diff << std::endl;
     std::cout << "p1 * p2: " << mult << std::endl;
-    // std::cout << "p1 / p2: " << div << std::endl;
+    std::cout << "p1 / p2: " << div << std::endl;
 
     std::cout << std::endl;
     Monom m(2, 6);
