@@ -213,8 +213,8 @@ public:
 };
 
 int main() {
-    // 5x^6 + 3x^6 + 2x^0 + 48x^3 + 9x^9 + 6x^12
-    // 5x^5 + 50x^50 + 20x^0 + 2x^6
+    // 1 5 -3 4 2 3 7 2 -3 1 5 0
+    // 1 2 -1 1 1 0
     Polynomial p1, p2;
     std::cout << "Enter 1st polynomial's monoms separating all variables by space (e.g. 1 2 3 4 => x^2 + 3x^4):\n";
     std::cin >> p1;
