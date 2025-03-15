@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <utility>
 #include <vector>
 
 class Monom {
@@ -61,10 +62,10 @@ public:
         monoms.push_back(newm);
     }
 
-    Polynomial& operator=(const Polynomial& other) {
+    Polynomial &operator=(const Polynomial &other) {
         if (this != &other) {
             monoms.clear();
-            for (const Monom& m : other.monoms) {
+            for (const Monom &m : other.monoms) {
                 addMonom(m);
             }
         }
@@ -100,25 +101,30 @@ public:
         return result;
     }
 
-    Polynomial operator/(const Polynomial &other) const {
-        Polynomial result;
+    std::pair<Polynomial, Polynomial> operator/(const Polynomial &other) const {
+        if (other.monoms.empty() || (other.monoms.size() == 1 && other.monoms[0].c == 0)) {
+            throw std::invalid_argument("zero polynomial division");
+        }
 
-        Polynomial divisible = *this;
-        Polynomial divider = other;
+        Polynomial result; // Частное
+        Polynomial divisible = *this; // Делимое, он же - остаток
 
-        Monom qmonom;
+        // До опустошения делимого многочлена или до тех пор, пока старшая степень делимого больше старшей степени делителя
+        while (!divisible.monoms.empty() && divisible.monoms[0].q >= other.monoms[0].q) {
+            Monom rmonom = divisible.monoms[0] / other.monoms[0]; // x^5-3x^4+2x^3+7x^2-3x+5 | x^2-x+1 
+            result.addMonom(rmonom);                              //                         |‾x^3‾‾‾‾ <--
 
-        while (divisible.monoms[0].q >= other.monoms[0].q) {
-            qmonom = divisible.monoms[0] / other.monoms[0];
-            result.addMonom(qmonom);
-            divider = other * qmonom;
-            divisible = divisible - divider;
+            Polynomial temp = other * rmonom; //  x^5-3x^4+2x^3+7x^2-3x+5 | x^2-x+1 
+                                              //  x^5-x^4+x^3 <--         |‾x^3‾‾‾‾
 
+            divisible = divisible - temp;     //  x^5-3x^4+2x^3+7x^2-3x+5 | x^2-x+1 
+                                              // ‾x̲^̲5̲-̲x̲^̲4̲+̲x̲^̲3̲____________ |‾x^3‾‾‾‾
+                                              //     -2x^4+x^3+7x^2-3x+5 <--
             divisible.sort();
         }
 
         result.sort();
-        return result;
+        return {result, divisible};
     }
 
     Polynomial operator/(const Monom &divm) const {
@@ -177,8 +183,10 @@ public:
             } else if (p.monoms[i].q != 0) {
                 os << "x^" << p.monoms[i].q;
             }
-
-            os << " ";
+            
+            if (i < p.monoms.size() - 1) {
+                os << " ";
+            }
         }
         return os;
     }
@@ -228,11 +236,12 @@ int main() {
     Polynomial sum = p1 + p2;
     Polynomial diff = p1 - p2;
     Polynomial mult = p1 * p2;
-    Polynomial div = p1 / p2;
+    Polynomial div = (p1 / p2).first;
+    Polynomial rem = (p1 / p2).second;
     std::cout << "p1 + p2: " << sum << std::endl;
     std::cout << "p1 - p2: " << diff << std::endl;
     std::cout << "p1 * p2: " << mult << std::endl;
-    std::cout << "p1 / p2: " << div << std::endl;
+    std::cout << "p1 / p2: (" << p2 << ")*(" << div << ") + " << rem << std::endl;
 
     std::cout << std::endl;
     Monom m(2, 6);
