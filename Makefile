@@ -16,4 +16,4 @@ run: $(BIN_DIR)/$(TARGET)
 	./$(BIN_DIR)/$(TARGET)
 
 clean: $(BIN_DIR)
-	"rm" -rf $(BIN_DIR)/$(TARGET)
+	"rm" -rf $(BIN_DIR)
