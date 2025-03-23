@@ -1,6 +1,6 @@
 CXX = g++
 SRC = main.cpp
-TARGET = polynomial.exe
+TARGET = polynomial
 CXXFLAGS = -fpermissive -g
 BIN_DIR = bin
 
