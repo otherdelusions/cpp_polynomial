@@ -175,7 +175,7 @@ public:
             if (p.monoms[i].c == 1 && p.monoms[i].q == 0) {
                 os << p.monoms[i].c;
             } else if (p.monoms[i].c != 1) {
-                os << abs(p.monoms[i].c);
+                os << std::abs(p.monoms[i].c);
             }
 
             if (p.monoms[i].q == 1) {
